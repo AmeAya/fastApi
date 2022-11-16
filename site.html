@@ -5,13 +5,42 @@
     <title>My Site</title>
 </head>
 <body>
-    <label for="app">Input App Name:</label>
-    <input id="app" name="app" type="text" placeholder="Application Name">
+    <div id="response"></div>
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name">
     <br>
-    <a href="http://127.0.0.1:8000/app?app_name=qwerty">
-        <button>
-            Search 'qwerty' app
-        </button>
-    </a>
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name">
+    <br>
+    <button onclick="send()">Send Data</button>
+    <script>
+        async function send() { //async - Асинхронность
+            const first_name = document.getElementById('first_name').value
+            const last_name = document.getElementById('last_name').value
+
+            //await - Ждет выполнения того, что стоит справа от него
+            //promise - Функция, которая обещает что-то вернуть
+            //fetch - Создание запроса
+            const response = await fetch('/hello', {
+               method: 'POST',
+               headers: {
+                   'Accept': 'application/json',
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({
+                   name: first_name,
+                   surname: last_name,
+               }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const div = document.getElementById('response')
+                div.innerHTML = '<h2>' + data.message + '</h2>'
+            }
+            else {
+                alert('Error. Bad Request')
+            }
+        }
+    </script>
 </body>
 </html>
